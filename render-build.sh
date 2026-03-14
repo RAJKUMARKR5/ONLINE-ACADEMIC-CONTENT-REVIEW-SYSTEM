@@ -3,4 +3,5 @@
 cd backend && npm install
 
 # Install frontend dependencies and build
-cd ../frontend && npm install && npm run build
+# Use --include=dev to ensure build tools (vite) are installed in production environment
+cd ../frontend && npm install --include=dev && npm run build
