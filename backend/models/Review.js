@@ -13,19 +13,19 @@ const reviewSchema = new mongoose.Schema({
     },
     technicalQuality: {
         type: Number,
-        min: 1,
+        min: 0,
         max: 5,
         required: true
     },
     clarity: {
         type: Number,
-        min: 1,
+        min: 0,
         max: 5,
         required: true
     },
     novelty: {
         type: Number,
-        min: 1,
+        min: 0,
         max: 5,
         required: true
     },

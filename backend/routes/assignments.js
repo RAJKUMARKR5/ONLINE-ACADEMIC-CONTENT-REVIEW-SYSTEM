@@ -38,15 +38,11 @@ router.post('/', protect, authorize('Admin'), async (req, res) => {
         // Send Email Notification
         if (reviewer && reviewer.email) {
             const message = `Dear ${reviewer.name},\n\nYou have been assigned a new paper to review on the OACRS platform. \n\nPaper Title: ${submission.title || 'Unknown Title'}\n\nPlease login to your account to review the assignment and provide your feedback.\n\nBest regards,\nOACRS Admin Team`;
-            try {
-                await sendEmail({
-                    email: reviewer.email,
-                    subject: 'New Review Assignment - OACRS',
-                    message
-                });
-            } catch (emailError) {
-                console.error("Failed to send assignment email to reviewer:", emailError);
-            }
+            sendEmail({
+                email: reviewer.email,
+                subject: 'New Review Assignment - OACRS',
+                message
+            }).catch(err => console.error('[Assignment] Deferred email error:', err.message));
         }
 
         res.status(201).json(assignment);

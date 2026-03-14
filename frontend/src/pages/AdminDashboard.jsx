@@ -58,6 +58,7 @@ const AdminDashboard = () => {
     };
 
     const handleAssign = (submissionId) => {
+        console.log(`[Admin] Assigning reviewer ${selectedReviewer} to submission ${submissionId}`);
         if (!selectedReviewer) {
             toast.warning('Please select a reviewer');
             return;
@@ -76,25 +77,45 @@ const AdminDashboard = () => {
     };
 
     const handleDecision = (submissionId, status) => {
+        console.log(`[Admin] Decision triggered for ${submissionId}: ${status}`);
+        
         if (window.confirm(`Are you sure you want to mark this paper as ${status}?`)) {
-            dispatch(updateSubmissionStatus({ submissionId, status }))
-                .unwrap()
-                .then((data) => {
-                    toast.success(`Submission ${status} successfully`);
-                    dispatch(getAllSubmissions());
-                })
-                .catch((error) => {
-                    toast.error(error || 'Failed to update submission status');
-                });
+            // Use setTimeout to decouple from window.confirm (fixes Chrome event loop issue)
+            setTimeout(() => {
+                console.log(`[Admin] Dispatching updateSubmissionStatus for ${status}`);
+                dispatch(updateSubmissionStatus({ submissionId, status }))
+                    .unwrap()
+                    .then((data) => {
+                        console.log(`[Admin] Status update successful:`, data);
+                        toast.success(`Submission ${status} successfully`);
+                        dispatch(getAllSubmissions());
+                    })
+                    .catch((error) => {
+                        console.error(`[Admin] Status update failed:`, error);
+                        toast.error(error || 'Failed to update submission status');
+                    });
+            }, 0);
         }
     };
 
     const handleDelete = (submissionId) => {
+        console.log(`[Admin] Delete triggered for submission ${submissionId}`);
+        
         if (window.confirm("Are you sure you want to delete this submission? This action cannot be undone.")) {
-            dispatch(deleteAdminSubmission(submissionId))
-                .unwrap()
-                .then(() => toast.success("Submission deleted successfully"))
-                .catch((error) => toast.error(error || "Failed to delete submission"));
+            // Use setTimeout to decouple from window.confirm (fixes Chrome event loop issue)
+            setTimeout(() => {
+                console.log(`[Admin] Dispatching deleteAdminSubmission for ${submissionId}`);
+                dispatch(deleteAdminSubmission(submissionId))
+                    .unwrap()
+                    .then(() => {
+                        console.log(`[Admin] Delete successful for ${submissionId}`);
+                        toast.success("Submission deleted successfully");
+                    })
+                    .catch((error) => {
+                        console.error(`[Admin] Delete failed for ${submissionId}:`, error);
+                        toast.error(error || "Failed to delete submission");
+                    });
+            }, 0);
         }
     };
 

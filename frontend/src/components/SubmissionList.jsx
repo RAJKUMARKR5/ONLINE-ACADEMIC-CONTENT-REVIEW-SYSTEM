@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { FileText, Calendar, Tag, MessageSquare, Trash2, Settings2 } from 'lucide-react';
+import { FileText, Calendar, Tag, MessageSquare, Trash2, Settings2, CheckCircle } from 'lucide-react';
 
 const SubmissionList = ({ submissions, onDelete }) => {
     if (!submissions || submissions.length === 0) {
@@ -76,7 +76,7 @@ const SubmissionList = ({ submissions, onDelete }) => {
 
                     <div className="bg-gray-50/50 px-6 py-4 border-t border-gray-100 flex flex-wrap gap-3 items-center justify-between">
                         <a 
-                            href={`http://localhost:5000/${encodeURI(submission.fileUrl.replace(/\\/g, '/'))}`} 
+                            href={submission.fileUrl ? `http://localhost:5000/${encodeURI(submission.fileUrl.replace(/\\/g, '/'))}` : '#'} 
                             target="_blank" 
                             rel="noopener noreferrer" 
                             className="inline-flex items-center text-[#2563EB] hover:text-[#1D4ED8] text-sm font-semibold transition-colors bg-white px-3 py-1.5 rounded-lg border border-gray-200 shadow-sm"

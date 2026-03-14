@@ -5,6 +5,7 @@ const path = require('path');
 const Submission = require('../models/Submission');
 const Review = require('../models/Review');
 const User = require('../models/User'); // Import User for emails
+const Assignment = require('../models/Assignment');
 const { protect, authorize } = require('../middleware/authMiddleware');
 const sendEmail = require('../utils/sendEmail');
 
@@ -79,7 +80,25 @@ router.get('/my', protect, authorize('Author'), async (req, res) => {
 router.get('/all', protect, authorize('Admin'), async (req, res) => {
     try {
         const submissions = await Submission.find().populate('author', 'name email');
-        res.status(200).json(submissions);
+        
+        // Attach reviews and assignments to each submission
+        const submissionsWithData = await Promise.all(
+            submissions.map(async (sub) => {
+                const reviews = await Review.find({ submission: sub._id })
+                    .populate('reviewer', 'name')
+                    .select('reviewer recommendation comments createdAt');
+                
+                const assignment = await Assignment.findOne({ submission: sub._id, status: 'Pending' })
+                    .populate('reviewer', 'name');
+
+                const subObj = sub.toObject();
+                subObj.reviews = reviews;
+                subObj.assignedReviewer = assignment ? assignment.reviewer : null;
+                return subObj;
+            })
+        );
+        
+        res.status(200).json(submissionsWithData);
     } catch (error) {
         console.error(error);
         res.status(500).json({ message: 'Server Error' });
@@ -148,8 +167,10 @@ router.get('/:id/reviews', protect, authorize('Author', 'Admin'), async (req, re
 router.put('/:id/decision', protect, authorize('Admin'), async (req, res) => {
     try {
         const { status } = req.body;
+        console.log(`[Decision] Received decision for submission ${req.params.id}: ${status}`);
         
         if (!['Accepted', 'Rejected', 'Published'].includes(status)) {
+            console.warn(`[Decision] Invalid status received: ${status}`);
             return res.status(400).json({ message: 'DEBUG: Invalid decision status. Must be Accepted, Rejected, or Published.' });
         }
 
@@ -168,21 +189,35 @@ router.put('/:id/decision', protect, authorize('Admin'), async (req, res) => {
             return res.status(404).json({ message: 'Submission not found' });
         }
 
-        // Send email to author
+        // Send email to author (Non-blocking)
         if (submission.author) {
-            const author = submission.author; // Already populated now
+            const author = submission.author;
             if (author && author.email) {
                 const actionText = (status === 'Accepted' || status === 'Published') ? 'published' : 'rejected';
                 const message = `Dear ${author.name},\n\nAn admin has made a final decision on your paper titled "${submission.title}".\n\nWe are pleased/sorry to inform you that your paper has been ${actionText} by the review committee.\n\nPlease log in to the OACRS dashboard for more details.\n\nBest regards,\nOACRS Admin Team`;
-                await sendEmail({
+                
+                // Do not await email sending to avoid blocking the API response
+                sendEmail({
                     email: author.email,
                     subject: `Final Decision on Your Paper (${status}) - OACRS`,
                     message
-                });
+                }).catch(err => console.error('[Decision] Deferred email error:', err.message));
             }
         }
 
-        res.status(200).json(submission);
+        const reviews = await Review.find({ submission: submission._id })
+            .populate('reviewer', 'name')
+            .select('reviewer recommendation comments createdAt');
+        
+        const assignment = await Assignment.findOne({ submission: submission._id, status: 'Pending' })
+            .populate('reviewer', 'name');
+
+        const populatedSubmission = submission.toObject();
+        populatedSubmission.reviews = reviews;
+        populatedSubmission.assignedReviewer = assignment ? assignment.reviewer : null;
+
+        console.log(`[Decision] Successfully updated status to ${status} for ${req.params.id}`);
+        res.status(200).json(populatedSubmission);
     } catch (error) {
         console.error(error);
         res.status(500).json({ message: 'Server Error' });
@@ -211,7 +246,6 @@ router.delete('/:id', protect, authorize('Author', 'Admin'), async (req, res) =>
         await Review.deleteMany({ submission: req.params.id });
 
         // Delete associated assignments
-        const Assignment = require('../models/Assignment');
         await Assignment.deleteMany({ submission: req.params.id });
 
         res.status(200).json({ id: req.params.id, message: 'Submission deleted' });

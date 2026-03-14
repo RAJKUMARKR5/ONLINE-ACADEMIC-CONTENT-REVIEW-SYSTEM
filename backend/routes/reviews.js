@@ -59,11 +59,11 @@ router.post('/', protect, authorize('Reviewer'), async (req, res) => {
             const author = await User.findById(submission.author);
             if (author && author.email) {
                 const message = `Dear ${author.name},\n\nA reviewer has just submitted feedback for your paper titled "${submission.title}".\n\nPlease log in to the OACRS dashboard to view the feedback and current status of your submission.\n\nBest regards,\nOACRS Admin Team`;
-                await sendEmail({
+                sendEmail({
                     email: author.email,
                     subject: 'New Review on Your Paper - OACRS',
                     message
-                });
+                }).catch(err => console.error('[Review] Deferred email error:', err.message));
             }
         }
 

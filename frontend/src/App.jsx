@@ -38,7 +38,7 @@ function App() {
         <ToastContainer position="top-right" autoClose={3000} hideProgressBar={false} />
         {showNavbar && <Header />}
         <Routes>
-          <Route path="/" element={user ? <Navigate to="/dashboard" /> : <Navigate to="/login" />} />
+          <Route path="/" element={<Navigate to="/login" />} />
           <Route path="/login" element={<Login />} />
           <Route path="/viewer" element={<Viewer />} />
           <Route path="/register" element={<Register />} />

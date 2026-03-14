@@ -21,9 +21,9 @@ const SubmitReview = () => {
     const [loadingSubmission, setLoadingSubmission] = useState(true);
 
     const [formData, setFormData] = useState({
-        technicalQuality: 5,
-        clarity: 5,
-        novelty: 5,
+        technicalQuality: 0,
+        clarity: 0,
+        novelty: 0,
         comments: '',
         recommendation: 'Accept',
     });
@@ -46,23 +46,44 @@ const SubmitReview = () => {
     }, [submissionId]);
 
     const onChange = (e) => {
+        let value = e.target.value;
+        
+        // Strictly enforce 0-5 scale for rating inputs
+        if (['technicalQuality', 'clarity', 'novelty'].includes(e.target.name)) {
+            if (value !== '') {
+                value = Math.max(0, Math.min(5, parseInt(value) || 0));
+            }
+        }
+
         setFormData((prevState) => ({
             ...prevState,
-            [e.target.name]: e.target.value,
+            [e.target.name]: value,
         }));
     };
 
     const onSubmit = (e) => {
         e.preventDefault();
+
+        // Final validation check
+        const ratings = [technicalQuality, clarity, novelty];
+        if (ratings.some(r => r < 0 || r > 5)) {
+            return toast.error('Check your scores! All ratings must be between 0 and 5.');
+        }
+
+        if (!comments.trim()) {
+            return toast.error('Please provide detailed comments.');
+        }
+
         const reviewData = {
             submissionId,
             assignmentId,
-            technicalQuality,
-            clarity,
-            novelty,
-            comments,
+            technicalQuality: parseInt(technicalQuality),
+            clarity: parseInt(clarity),
+            novelty: parseInt(novelty),
+            comments: comments.trim(),
             recommendation,
         };
+        
         dispatch(submitReview(reviewData))
             .unwrap()
             .then(() => {
@@ -158,7 +179,7 @@ const SubmitReview = () => {
                         
                         {/* Rating Metrics */}
                         <div className="mb-8">
-                            <h3 className="text-sm font-bold text-gray-900 uppercase tracking-wider mb-5 pb-2 border-b border-gray-100">Quantitative Metrics (1-5)</h3>
+                            <h3 className="text-sm font-bold text-gray-900 uppercase tracking-wider mb-5 pb-2 border-b border-gray-100">Quantitative Metrics (0-5)</h3>
                             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                                 
                                 {/* Technical Quality */}
@@ -174,12 +195,12 @@ const SubmitReview = () => {
                                         name="technicalQuality"
                                         value={technicalQuality}
                                         onChange={onChange}
-                                        min="1"
+                                        min="0"
                                         max="5"
                                         className="w-full px-4 py-2.5 bg-white border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#2563EB] font-medium text-lg text-center"
                                         required
                                     />
-                                    <p className="text-xs text-center text-gray-400 mt-2">1 = Poor, 5 = Excellent</p>
+                                    <p className="text-xs text-center text-gray-400 mt-2">0 = Poor, 5 = Excellent</p>
                                 </div>
 
                                 {/* Clarity */}
@@ -195,12 +216,12 @@ const SubmitReview = () => {
                                         name="clarity"
                                         value={clarity}
                                         onChange={onChange}
-                                        min="1"
+                                        min="0"
                                         max="5"
                                         className="w-full px-4 py-2.5 bg-white border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#2563EB] font-medium text-lg text-center"
                                         required
                                     />
-                                    <p className="text-xs text-center text-gray-400 mt-2">1 = Poor, 5 = Excellent</p>
+                                    <p className="text-xs text-center text-gray-400 mt-2">0 = Poor, 5 = Excellent</p>
                                 </div>
 
                                 {/* Novelty */}
@@ -216,12 +237,12 @@ const SubmitReview = () => {
                                         name="novelty"
                                         value={novelty}
                                         onChange={onChange}
-                                        min="1"
+                                        min="0"
                                         max="5"
                                         className="w-full px-4 py-2.5 bg-white border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#2563EB] font-medium text-lg text-center"
                                         required
                                     />
-                                    <p className="text-xs text-center text-gray-400 mt-2">1 = Poor, 5 = Excellent</p>
+                                    <p className="text-xs text-center text-gray-400 mt-2">0 = Poor, 5 = Excellent</p>
                                 </div>
                             </div>
                         </div>

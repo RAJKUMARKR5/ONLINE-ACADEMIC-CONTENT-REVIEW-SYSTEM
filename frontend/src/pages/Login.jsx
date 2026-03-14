@@ -70,10 +70,12 @@ const Login = () => {
         document.head.appendChild(script);
     };
     useEffect(() => {
-        if (user) {
+        // Only auto-redirect to dashboard if this was a SUCCESSFUL login attempt
+        // OR if the user is already logged in but NOT on the login page (handled by ProtectedRoute)
+        if (user && success) {
             navigate('/dashboard');
         }
-    }, [user, navigate]);
+    }, [user, success, navigate]);
 
     const onChange = (e) => {
         setFormData((prevState) => ({
@@ -106,23 +108,28 @@ const Login = () => {
 
 
     return (
-        <div className="min-h-screen bg-[#F8FAFC] flex flex-col justify-center py-12 sm:px-6 lg:px-8 font-sans">
-            <div className="sm:mx-auto sm:w-full sm:max-w-md text-center">
+        <div className="min-h-screen flex flex-col justify-center py-12 sm:px-6 lg:px-8 font-sans relative overflow-hidden" style={{ background: 'linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%)' }}>
+            {/* Animated decorative blobs */}
+            <div className="absolute top-0 -left-4 w-72 h-72 bg-blue-600 rounded-full mix-blend-screen filter blur-3xl opacity-20 animate-blob" aria-hidden="true"></div>
+            <div className="absolute top-0 -right-4 w-72 h-72 bg-indigo-600 rounded-full mix-blend-screen filter blur-3xl opacity-20 animate-blob animation-delay-2000" aria-hidden="true"></div>
+            <div className="absolute -bottom-8 left-20 w-72 h-72 bg-cyan-600 rounded-full mix-blend-screen filter blur-3xl opacity-15 animate-blob animation-delay-4000" aria-hidden="true"></div>
+
+            <div className="relative z-10 sm:mx-auto sm:w-full sm:max-w-md text-center">
                 <div className="flex justify-center mb-4">
-                    <div className="p-3 bg-blue-100 rounded-2xl shadow-sm">
-                        <BookOpen size={40} className="text-[#2563EB]" />
+                    <div className="p-3 rounded-2xl shadow-lg" style={{ background: 'linear-gradient(135deg, #2563EB, #4F46E5)' }}>
+                        <BookOpen size={40} className="text-white" />
                     </div>
                 </div>
-                <h1 className="text-3xl font-extrabold text-[#1E293B] tracking-tight">
+                <h1 className="text-3xl font-extrabold text-white tracking-tight">
                     Academic Content Review System
                 </h1>
-                <h2 className="mt-2 text-center text-sm text-gray-600">
+                <h2 className="mt-2 text-center text-sm text-blue-200">
                     Sign in to your account
                 </h2>
             </div>
 
-            <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
-                <div className="bg-white py-8 px-4 shadow-xl shadow-blue-900/5 sm:rounded-2xl sm:px-10 border border-gray-100">
+            <div className="relative z-10 mt-8 sm:mx-auto sm:w-full sm:max-w-md">
+                <div className="bg-white py-8 px-4 shadow-2xl shadow-black/20 sm:rounded-2xl sm:px-10 border border-white/20">
                     
                     {error && (
                         <div className="mb-6 bg-red-50 border-l-4 border-red-500 p-4 rounded-md">

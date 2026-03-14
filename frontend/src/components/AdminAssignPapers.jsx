@@ -18,9 +18,9 @@ const AdminAssignPapers = ({
                 <div>
                     <h2 className="text-2xl font-extrabold text-[#1E293B] tracking-tight flex items-center">
                         <Settings className="mr-3 text-[#2563EB]" size={28} />
-                        Manage Submissions
+                        Assign/Publish Content
                     </h2>
-                    <p className="text-gray-500 ml-10">Assign reviewers and make final publication decisions.</p>
+                    <p className="text-gray-500 ml-10">Assign reviewers and make final publication or rejection decisions.</p>
                 </div>
             </div>
 
@@ -65,7 +65,7 @@ const AdminAssignPapers = ({
                                             </div>
                                         </td>
                                         
-                                        <td className="py-5 px-6 whitespace-nowrap">
+                                        <td className="py-5 px-6">
                                             <span className={`inline-flex items-center justify-center px-3 py-1 rounded-full text-xs font-bold shadow-sm ${
                                                 submission.status === 'Accepted' || submission.status === 'Published' ? 'bg-[#10B981] text-white' :
                                                 submission.status === 'Rejected' ? 'bg-red-50 text-red-700 border border-red-200' :
@@ -74,6 +74,30 @@ const AdminAssignPapers = ({
                                             }`}>
                                                 {submission.status === 'Accepted' || submission.status === 'Published' ? 'Published' : submission.status}
                                             </span>
+                                            {/* Show assigned reviewer if Under Review */}
+                                            {submission.status === 'Under Review' && submission.assignedReviewer && (
+                                                <div className="mt-2 text-xs font-medium text-gray-500 bg-gray-50 border border-gray-100 rounded-md px-2 py-1 flex items-center">
+                                                    <span className="w-1.5 h-1.5 bg-yellow-400 rounded-full mr-1.5"></span>
+                                                    Under Review by {submission.assignedReviewer.name}
+                                                </div>
+                                            )}
+                                            {/* Show reviewer recommendation if reviews exist */}
+                                            {submission.reviews && submission.reviews.length > 0 && (
+                                                <div className="mt-2 space-y-1">
+                                                    {submission.reviews.map((review, idx) => (
+                                                        <div key={idx} className={`flex items-center text-xs font-medium rounded-md px-2 py-1 ${
+                                                            review.recommendation === 'Accept' 
+                                                                ? 'bg-green-50 text-green-700 border border-green-200' 
+                                                                : 'bg-red-50 text-red-700 border border-red-200'
+                                                        }`}>
+                                                            <span className="mr-1">{review.recommendation === 'Accept' ? '✅' : '❌'}</span>
+                                                            <span>
+                                                                {review.recommendation === 'Accept' ? 'Approved' : 'Rejected'} by {review.reviewer?.name || 'Reviewer'}
+                                                            </span>
+                                                        </div>
+                                                    ))}
+                                                </div>
+                                            )}
                                         </td>
                                         
                                         <td className="py-5 px-6 min-w-[420px]">
