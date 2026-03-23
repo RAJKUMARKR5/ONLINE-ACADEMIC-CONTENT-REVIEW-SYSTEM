@@ -94,7 +94,21 @@ router.get('/published', async (req, res) => {
         const publishedSubmissions = await Submission.find({ 
             status: { $in: ['Accepted', 'Published'] } 
         }).populate('author', 'name');
-        res.status(200).json(publishedSubmissions);
+
+        // Attach reviews to published submissions so public viewers can see ratings & feedback
+        const submissionsWithReviews = await Promise.all(
+            publishedSubmissions.map(async (sub) => {
+                const reviews = await Review.find({ submission: sub._id })
+                    .populate('reviewer', 'name')
+                    .select('reviewer recommendation comments createdAt');
+                
+                const subObj = sub.toObject();
+                subObj.reviews = reviews;
+                return subObj;
+            })
+        );
+
+        res.status(200).json(submissionsWithReviews);
     } catch (error) {
         console.error(error);
         res.status(500).json({ message: 'Server Error' });

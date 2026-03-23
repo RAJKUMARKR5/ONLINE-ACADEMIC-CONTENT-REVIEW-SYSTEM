@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from '../utils/axios';
-import { User, FileText, Download, Eye, ArrowLeft } from 'lucide-react';
+import { User, FileText, Download, Eye, ArrowLeft, X, MessageSquare } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 const Viewer = () => {
@@ -9,6 +9,7 @@ const Viewer = () => {
     const [publishedPapers, setPublishedPapers] = useState([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
+    const [selectedPaper, setSelectedPaper] = useState(null);
 
     useEffect(() => {
         if (viewerName) {
@@ -121,7 +122,11 @@ const Viewer = () => {
                 ) : (
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                         {publishedPapers.map((paper) => (
-                            <div key={paper._id} className="bg-white rounded-2xl shadow-sm hover:shadow-xl transition-all duration-300 border border-gray-100 overflow-hidden flex flex-col hover:-translate-y-2 group">
+                            <div 
+                                key={paper._id} 
+                                onClick={() => setSelectedPaper(paper)}
+                                className="bg-white rounded-2xl shadow-sm hover:shadow-xl transition-all duration-300 border border-gray-100 overflow-hidden flex flex-col hover:-translate-y-2 group cursor-pointer"
+                            >
                                 <div className="p-6 flex-grow">
                                     <div className="flex justify-between items-start mb-4">
                                         <span className="px-3 py-1 bg-green-100 text-green-700 text-xs font-bold rounded-full uppercase tracking-wider">
@@ -149,6 +154,7 @@ const Viewer = () => {
                                         href={paper.fileUrl.startsWith('http') ? paper.fileUrl : `${import.meta.env.VITE_FILE_BASE_URL || ''}/${encodeURI(paper.fileUrl.replace(/\\/g, '/'))}`}
                                         target="_blank"
                                         rel="noopener noreferrer"
+                                        onClick={(e) => e.stopPropagation()}
                                         className="inline-flex items-center gap-1 text-sm bg-indigo-50 text-indigo-700 hover:bg-indigo-100 px-3 py-1.5 rounded-lg font-semibold transition-colors"
                                     >
                                         <Download size={14} /> View
@@ -159,6 +165,106 @@ const Viewer = () => {
                     </div>
                 )}
             </div>
+
+            {/* Paper Details Modal */}
+            {selectedPaper && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fade-in" onClick={() => setSelectedPaper(null)}>
+                    <div 
+                        className="bg-white rounded-2xl shadow-2xl w-full max-w-3xl max-h-[90vh] overflow-y-auto flex flex-col animate-slide-up"
+                        onClick={(e) => e.stopPropagation()}
+                    >
+                        {/* Modal Header */}
+                        <div className="p-6 border-b border-gray-100 flex justify-between items-start sticky top-0 bg-white z-10">
+                            <div>
+                                <span className="px-3 py-1 bg-green-100 text-green-700 text-xs font-bold rounded-full uppercase tracking-wider mb-3 inline-block">
+                                    {selectedPaper.domain}
+                                </span>
+                                <h2 className="text-2xl font-bold text-gray-800">{selectedPaper.title}</h2>
+                                <div className="flex items-center text-sm text-gray-500 mt-2">
+                                    <User size={16} className="mr-1.5" />
+                                    <span className="font-medium">{selectedPaper.author?.name || 'Unknown Author'}</span>
+                                </div>
+                            </div>
+                            <button 
+                                onClick={() => setSelectedPaper(null)} 
+                                className="p-2 text-gray-400 hover:text-gray-700 bg-gray-50 hover:bg-gray-100 rounded-full transition-colors"
+                            >
+                                <X size={20} />
+                            </button>
+                        </div>
+                        
+                        {/* Modal Body */}
+                        <div className="p-6 space-y-6 flex-grow">
+                            <div>
+                                <h3 className="text-sm font-bold text-gray-900 uppercase tracking-wider mb-2 flex items-center gap-2">
+                                    <FileText size={16} className="text-indigo-500" /> Abstract
+                                </h3>
+                                <p className="text-gray-700 leading-relaxed text-sm whitespace-pre-line bg-gray-50 p-4 rounded-xl border border-gray-100">
+                                    {selectedPaper.abstract}
+                                </p>
+                            </div>
+                            
+                            <div>
+                                <h3 className="text-sm font-bold text-gray-900 uppercase tracking-wider mb-2">Keywords</h3>
+                                <div className="flex flex-wrap gap-2">
+                                    {selectedPaper.keywords?.map((keyword, idx) => (
+                                        <span key={idx} className="text-xs bg-indigo-50 text-indigo-700 border border-indigo-100 px-3 py-1.5 rounded-lg font-medium">
+                                            #{keyword}
+                                        </span>
+                                    ))}
+                                </div>
+                            </div>
+
+                            {/* Reviews Section */}
+                            <div>
+                                <h3 className="text-sm font-bold text-gray-900 uppercase tracking-wider mb-3 flex items-center gap-2">
+                                    <MessageSquare size={16} className="text-indigo-500" /> Reviewer Feedback
+                                </h3>
+                                {selectedPaper.reviews && selectedPaper.reviews.length > 0 ? (
+                                    <div className="space-y-4">
+                                        {selectedPaper.reviews.map((review, idx) => (
+                                            <div key={idx} className="bg-white border border-gray-200 rounded-xl p-4 shadow-sm">
+                                                <div className="flex justify-between items-start mb-2">
+                                                    <div className="flex items-center text-sm font-semibold text-gray-800">
+                                                        <User size={14} className="mr-1.5 text-gray-400" />
+                                                        {review.reviewer?.name || 'Assigned Reviewer'}
+                                                    </div>
+                                                    <span className={`px-2.5 py-1 text-xs font-bold rounded-lg ${
+                                                        review.recommendation === 'Accept' ? 'bg-green-100 text-green-700' :
+                                                        review.recommendation === 'Reject' ? 'bg-red-100 text-red-700' :
+                                                        'bg-yellow-100 text-yellow-700'
+                                                    }`}>
+                                                        {review.recommendation}
+                                                    </span>
+                                                </div>
+                                                <div className="text-sm text-gray-600 bg-gray-50 p-3 rounded-lg block w-full border border-gray-100">
+                                                    <span className="font-semibold block mb-1 text-gray-700">Comments:</span>
+                                                    {review.comments || 'No specific comments provided.'}
+                                                </div>
+                                            </div>
+                                        ))}
+                                    </div>
+                                ) : (
+                                    <p className="text-sm text-gray-500 italic bg-gray-50 p-4 rounded-xl border border-gray-100">No reviewer feedback available for this paper.</p>
+                                )}
+                            </div>
+                        </div>
+
+                        {/* Modal Footer */}
+                        <div className="p-6 border-t border-gray-100 bg-gray-50 shrink-0 flex justify-end">
+                            <a
+                                href={selectedPaper.fileUrl.startsWith('http') ? selectedPaper.fileUrl : `${import.meta.env.VITE_FILE_BASE_URL || ''}/${encodeURI(selectedPaper.fileUrl.replace(/\\/g, '/'))}`}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="btn-premium inline-flex items-center gap-2 text-white px-6 py-2.5 rounded-xl font-bold shadow-md transition-all transform hover:scale-105"
+                                style={{ background: 'linear-gradient(135deg, #6366F1, #8B5CF6)' }}
+                            >
+                                <Download size={18} /> View Full Document
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 };
