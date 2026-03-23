@@ -14,11 +14,23 @@ const storage = new CloudinaryStorage({
   cloudinary: cloudinary,
   params: {
     folder: 'oacrs_submissions', // Folder in your Cloudinary account
-    allowed_formats: ['pdf', 'doc', 'docx'],
     resource_type: 'raw', // Important for non-image files like PDF, DOC
   },
 });
 
-const uploadCloud = multer({ storage: storage });
+const uploadCloud = multer({ 
+  storage: storage,
+  fileFilter: (req, file, cb) => {
+    const filetypes = /pdf|doc|docx/i;
+    // Check extension
+    const extname = filetypes.test(file.originalname.split('.').pop());
+    
+    if (extname) {
+      return cb(null, true);
+    } else {
+      cb(new Error('Error: PDF and DOC/DOCX only!'));
+    }
+  }
+});
 
 module.exports = { cloudinary, uploadCloud };
