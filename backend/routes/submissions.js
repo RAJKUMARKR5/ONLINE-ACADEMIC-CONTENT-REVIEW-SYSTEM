@@ -11,28 +11,35 @@ const { uploadCloud, cloudinary } = require('../config/cloudinaryConfig');
 // @desc    Create a new submission
 // @route   POST /api/submissions
 // @access  Private (Author only)
-router.post('/', protect, authorize('Author'), uploadCloud.single('file'), async (req, res) => {
-    const { title, abstract, keywords, domain } = req.body;
+router.post('/', protect, authorize('Author'), (req, res) => {
+    uploadCloud.single('file')(req, res, async function (err) {
+        if (err) {
+            console.error('[Cloudinary Upload Error]', err);
+            return res.status(500).json({ message: 'File upload failed: ' + (err.message || err.toString()) });
+        }
+        
+        const { title, abstract, keywords, domain } = req.body;
 
-    if (!req.file) {
-        return res.status(400).json({ message: 'File is required' });
-    }
+        if (!req.file) {
+            return res.status(400).json({ message: 'File is required' });
+        }
 
-    try {
-        const submission = await Submission.create({
-            author: req.user.id,
-            title,
-            abstract,
-            keywords: keywords.split(',').map(k => k.trim()), // Assuming comma-separated
-            domain,
-            fileUrl: req.file.path,
-        });
+        try {
+            const submission = await Submission.create({
+                author: req.user.id,
+                title,
+                abstract,
+                keywords: keywords ? keywords.split(',').map(k => k.trim()) : [],
+                domain,
+                fileUrl: req.file.path,
+            });
 
-        res.status(201).json(submission);
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ message: 'Server Error' });
-    }
+            res.status(201).json(submission);
+        } catch (error) {
+            console.error('[Submission DB Error]', error);
+            res.status(500).json({ message: 'Server Error: Could not save submission to database' });
+        }
+    });
 });
 
 // @desc    Get all submissions for the logged-in author
