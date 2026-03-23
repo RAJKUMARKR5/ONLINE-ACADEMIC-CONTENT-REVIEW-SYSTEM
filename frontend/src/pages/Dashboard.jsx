@@ -82,8 +82,8 @@ const Dashboard = () => {
     const totalSubmissions = submissions.length;
     const pendingReviews = submissions.filter(s => s.status === 'Pending').length;
     const statCards = [
-        { title: 'Total Submissions', value: totalSubmissions, icon: <FileText size={24} className="text-blue-600" />, bg: 'bg-blue-50', border: 'border-blue-100' },
-        { title: 'Pending Reviews', value: pendingReviews, icon: <Clock size={24} className="text-yellow-600" />, bg: 'bg-yellow-50', border: 'border-yellow-100' },
+        { title: 'Total Submissions', value: totalSubmissions, icon: <FileText size={24} className="text-white" />, bgIcon: 'linear-gradient(135deg, #3B82F6, #6366F1)', border: 'border-blue-100' },
+        { title: 'Pending Reviews', value: pendingReviews, icon: <Clock size={24} className="text-white" />, bgIcon: 'linear-gradient(135deg, #F59E0B, #EF4444)', border: 'border-yellow-100' },
     ];
 
     return (
@@ -92,8 +92,8 @@ const Dashboard = () => {
             {/* Stat Cards */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-6 mb-10 max-w-2xl">
                 {statCards.map((stat, index) => (
-                    <div key={index} className={`flex items-center p-6 rounded-2xl shadow-sm border ${stat.border}`}>
-                        <div className={`p-4 rounded-xl ${stat.bg} mr-4`}>
+                    <div key={index} className={`card-hover flex items-center p-6 rounded-2xl shadow-sm border ${stat.border} bg-white`}>
+                        <div className="p-4 rounded-xl mr-4 shadow-md" style={{ background: stat.bgIcon }}>
                             {stat.icon}
                         </div>
                         <div>

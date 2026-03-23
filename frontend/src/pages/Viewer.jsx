@@ -44,8 +44,9 @@ const Viewer = () => {
 
     if (!viewerName) {
         return (
-            <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500">
-                <div className="w-full max-w-md bg-white/90 backdrop-blur-md p-8 rounded-2xl shadow-2xl relative z-10 border border-white/20">
+            <div className="flex items-center justify-center min-h-screen relative overflow-hidden" style={{ background: 'linear-gradient(135deg, #4F46E5 0%, #7C3AED 30%, #EC4899 60%, #F97316 100%)' }}>
+                <div className="absolute inset-0" style={{ background: 'radial-gradient(circle at 30% 50%, rgba(255,255,255,0.1) 0%, transparent 50%)' }}></div>
+                <div className="w-full max-w-md p-8 rounded-2xl shadow-2xl relative z-10 border border-white/20 animate-slide-up" style={{ background: 'rgba(255, 255, 255, 0.92)', backdropFilter: 'blur(20px)' }}>
                     <div className="flex justify-center mb-6">
                         <div className="p-3 bg-indigo-100 rounded-full">
                             <Eye size={40} className="text-indigo-600" />
@@ -69,7 +70,8 @@ const Viewer = () => {
                         </div>
                         <button
                             type="submit"
-                            className="w-full bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-bold py-3 px-4 rounded-xl hover:from-indigo-700 hover:to-purple-700 focus:ring-4 focus:ring-indigo-300 transition-all shadow-lg transform hover:-translate-y-0.5"
+                            className="btn-premium w-full text-white font-bold py-3 px-4 rounded-xl focus:ring-4 focus:ring-violet-300 transition-all shadow-lg transform hover:scale-[1.02] hover:-translate-y-0.5 active:scale-[0.98]"
+                            style={{ background: 'linear-gradient(135deg, #6366F1, #8B5CF6, #EC4899)' }}
                         >
                             Enter as Viewer
                         </button>
@@ -85,8 +87,8 @@ const Viewer = () => {
     }
 
     return (
-        <div className="min-h-screen bg-gray-50 p-6 md:p-10 font-sans">
-            <div className="max-w-7xl mx-auto">
+        <div className="min-h-screen p-6 md:p-10 font-sans" style={{ background: 'linear-gradient(135deg, #f8fafc 0%, #eef2f7 50%, #f0f4f8 100%)' }}>
+            <div className="max-w-7xl mx-auto animate-fade-in">
                 <header className="flex justify-between items-center mb-10 bg-white p-5 rounded-2xl shadow-sm border border-gray-100">
                     <div>
                         <h1 className="text-2xl font-bold text-gray-800 flex items-center gap-2">
@@ -119,7 +121,7 @@ const Viewer = () => {
                 ) : (
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                         {publishedPapers.map((paper) => (
-                            <div key={paper._id} className="bg-white rounded-2xl shadow-sm hover:shadow-lg transition-all duration-300 border border-gray-100 overflow-hidden flex flex-col hover:-translate-y-1">
+                            <div key={paper._id} className="bg-white rounded-2xl shadow-sm hover:shadow-xl transition-all duration-300 border border-gray-100 overflow-hidden flex flex-col hover:-translate-y-2 group">
                                 <div className="p-6 flex-grow">
                                     <div className="flex justify-between items-start mb-4">
                                         <span className="px-3 py-1 bg-green-100 text-green-700 text-xs font-bold rounded-full uppercase tracking-wider">

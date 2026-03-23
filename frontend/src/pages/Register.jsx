@@ -99,23 +99,28 @@ const Register = () => {
     }
 
     return (
-        <div className="min-h-screen bg-[#F8FAFC] flex flex-col justify-center py-12 sm:px-6 lg:px-8 font-sans">
-            <div className="sm:mx-auto sm:w-full sm:max-w-md text-center">
+        <div className="min-h-screen flex flex-col justify-center py-12 sm:px-6 lg:px-8 font-sans relative overflow-hidden" style={{ background: 'linear-gradient(135deg, #0a0f1e 0%, #111b33 30%, #0d1a2d 60%, #0a0f1e 100%)' }}>
+            {/* Animated decorative blobs */}
+            <div className="absolute top-0 -left-4 w-96 h-96 bg-emerald-500 rounded-full mix-blend-screen filter blur-3xl opacity-20 animate-blob" aria-hidden="true"></div>
+            <div className="absolute top-0 -right-4 w-96 h-96 bg-violet-600 rounded-full mix-blend-screen filter blur-3xl opacity-20 animate-blob animation-delay-2000" aria-hidden="true"></div>
+            <div className="absolute -bottom-8 left-20 w-80 h-80 bg-cyan-500 rounded-full mix-blend-screen filter blur-3xl opacity-15 animate-blob animation-delay-4000" aria-hidden="true"></div>
+
+            <div className="relative z-10 sm:mx-auto sm:w-full sm:max-w-md text-center animate-slide-up">
                 <div className="flex justify-center mb-4">
-                    <div className="p-3 bg-blue-100 rounded-2xl shadow-sm">
-                        <BookOpen size={40} className="text-[#2563EB]" />
+                    <div className="p-4 rounded-2xl shadow-xl animate-pulse-glow" style={{ background: 'linear-gradient(135deg, #10B981, #3B82F6, #6366F1)' }}>
+                        <BookOpen size={40} className="text-white" />
                     </div>
                 </div>
-                <h1 className="text-3xl font-extrabold text-[#1E293B] tracking-tight">
+                <h1 className="text-3xl font-extrabold text-white tracking-tight">
                     Academic Content Review System
                 </h1>
-                <h2 className="mt-2 text-center text-sm text-gray-600">
+                <h2 className="mt-2 text-center text-sm text-emerald-300/80">
                     Create your researcher profile
                 </h2>
             </div>
 
-            <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
-                <div className="bg-white py-8 px-4 shadow-xl shadow-blue-900/5 sm:rounded-2xl sm:px-10 border border-gray-100">
+            <div className="relative z-10 mt-8 sm:mx-auto sm:w-full sm:max-w-md animate-fade-in">
+                <div className="py-8 px-4 shadow-2xl shadow-black/30 sm:rounded-2xl sm:px-10 border border-white/10" style={{ background: 'rgba(255, 255, 255, 0.95)', backdropFilter: 'blur(20px)' }}>
                     
                     {error && (
                         <div className="mb-6 bg-red-50 border-l-4 border-red-500 p-4 rounded-md">
@@ -213,7 +218,8 @@ const Register = () => {
                             <button
                                 type="submit"
                                 disabled={loading || !isVerified}
-                                className="w-full flex justify-center py-3 px-4 border border-transparent rounded-xl shadow-lg shadow-blue-600/20 text-sm font-bold text-white bg-[#2563EB] hover:bg-[#1D4ED8] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#2563EB] transition-all disabled:opacity-40 disabled:grayscale disabled:cursor-not-allowed transform active:scale-95"
+                                className="btn-premium w-full flex justify-center py-3 px-4 border border-transparent rounded-xl shadow-lg shadow-emerald-600/30 text-sm font-bold text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-400 transition-all disabled:opacity-40 disabled:grayscale disabled:cursor-not-allowed transform hover:scale-[1.02] active:scale-[0.98]"
+                                style={{ background: 'linear-gradient(135deg, #10B981, #3B82F6, #6366F1)' }}
                             >
                                 {loading ? (
                                     <Loader2 className="animate-spin -ml-1 mr-2 h-5 w-5 text-white" />

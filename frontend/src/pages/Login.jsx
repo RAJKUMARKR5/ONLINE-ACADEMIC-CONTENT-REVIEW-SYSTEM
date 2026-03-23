@@ -108,28 +108,29 @@ const Login = () => {
 
 
     return (
-        <div className="min-h-screen flex flex-col justify-center py-12 sm:px-6 lg:px-8 font-sans relative overflow-hidden" style={{ background: 'linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%)' }}>
+        <div className="min-h-screen flex flex-col justify-center py-12 sm:px-6 lg:px-8 font-sans relative overflow-hidden" style={{ background: 'linear-gradient(135deg, #0a0f1e 0%, #111b33 30%, #0d1a2d 60%, #0a0f1e 100%)' }}>
             {/* Animated decorative blobs */}
-            <div className="absolute top-0 -left-4 w-72 h-72 bg-blue-600 rounded-full mix-blend-screen filter blur-3xl opacity-20 animate-blob" aria-hidden="true"></div>
-            <div className="absolute top-0 -right-4 w-72 h-72 bg-indigo-600 rounded-full mix-blend-screen filter blur-3xl opacity-20 animate-blob animation-delay-2000" aria-hidden="true"></div>
-            <div className="absolute -bottom-8 left-20 w-72 h-72 bg-cyan-600 rounded-full mix-blend-screen filter blur-3xl opacity-15 animate-blob animation-delay-4000" aria-hidden="true"></div>
+            <div className="absolute top-0 -left-4 w-96 h-96 bg-blue-500 rounded-full mix-blend-screen filter blur-3xl opacity-25 animate-blob" aria-hidden="true"></div>
+            <div className="absolute top-0 -right-4 w-96 h-96 bg-violet-600 rounded-full mix-blend-screen filter blur-3xl opacity-20 animate-blob animation-delay-2000" aria-hidden="true"></div>
+            <div className="absolute -bottom-8 left-20 w-80 h-80 bg-cyan-500 rounded-full mix-blend-screen filter blur-3xl opacity-20 animate-blob animation-delay-4000" aria-hidden="true"></div>
+            <div className="absolute top-1/2 right-1/4 w-64 h-64 bg-fuchsia-500 rounded-full mix-blend-screen filter blur-3xl opacity-10 animate-float" aria-hidden="true"></div>
 
-            <div className="relative z-10 sm:mx-auto sm:w-full sm:max-w-md text-center">
+            <div className="relative z-10 sm:mx-auto sm:w-full sm:max-w-md text-center animate-slide-up">
                 <div className="flex justify-center mb-4">
-                    <div className="p-3 rounded-2xl shadow-lg" style={{ background: 'linear-gradient(135deg, #2563EB, #4F46E5)' }}>
+                    <div className="p-4 rounded-2xl shadow-xl animate-pulse-glow" style={{ background: 'linear-gradient(135deg, #3B82F6, #8B5CF6, #6366F1)' }}>
                         <BookOpen size={40} className="text-white" />
                     </div>
                 </div>
                 <h1 className="text-3xl font-extrabold text-white tracking-tight">
                     Academic Content Review System
                 </h1>
-                <h2 className="mt-2 text-center text-sm text-blue-200">
+                <h2 className="mt-2 text-center text-sm text-blue-300/80">
                     Sign in to your account
                 </h2>
             </div>
 
-            <div className="relative z-10 mt-8 sm:mx-auto sm:w-full sm:max-w-md">
-                <div className="bg-white py-8 px-4 shadow-2xl shadow-black/20 sm:rounded-2xl sm:px-10 border border-white/20">
+            <div className="relative z-10 mt-8 sm:mx-auto sm:w-full sm:max-w-md animate-fade-in">
+                <div className="py-8 px-4 shadow-2xl shadow-black/30 sm:rounded-2xl sm:px-10 border border-white/10" style={{ background: 'rgba(255, 255, 255, 0.95)', backdropFilter: 'blur(20px)' }}>
                     
                     {error && (
                         <div className="mb-6 bg-red-50 border-l-4 border-red-500 p-4 rounded-md">
@@ -207,7 +208,8 @@ const Login = () => {
                             <button
                                 type="submit"
                                 disabled={loading}
-                                className="w-full flex justify-center py-2.5 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-[#2563EB] hover:bg-[#1D4ED8] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#2563EB] transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                                className="btn-premium w-full flex justify-center py-3 px-4 border border-transparent rounded-xl shadow-lg shadow-blue-600/30 text-sm font-bold text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all disabled:opacity-50 disabled:cursor-not-allowed transform hover:scale-[1.02] active:scale-[0.98]"
+                                style={{ background: 'linear-gradient(135deg, #3B82F6, #6366F1, #8B5CF6)' }}
                             >
                                 {loading ? (
                                     <Loader2 className="animate-spin -ml-1 mr-2 h-5 w-5 text-white" />

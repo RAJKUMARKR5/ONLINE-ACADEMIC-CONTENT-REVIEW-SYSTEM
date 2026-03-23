@@ -38,12 +38,12 @@ const MainLayout = ({ children, activeTab, setActiveTab }) => {
     const navItems = getNavItems();
 
     return (
-        <div className="flex h-screen font-sans text-gray-800" style={{ background: 'linear-gradient(135deg, #f0f4f8 0%, #e2e8f0 100%)' }}>
+        <div className="flex h-screen font-sans text-gray-800">
             {/* Sidebar */}
-            <aside className="w-64 flex flex-col transition-all duration-300 shadow-xl" style={{ background: 'linear-gradient(180deg, #0f172a 0%, #1e293b 100%)' }}>
+            <aside className="w-64 flex flex-col transition-all duration-300 shadow-2xl" style={{ background: 'linear-gradient(180deg, #0a0f1e 0%, #111b33 50%, #0f172a 100%)' }}>
                 <div className="p-5 border-b border-white/10">
-                    <h1 className="text-lg font-bold text-white tracking-tight">OACRS</h1>
-                    <p className="text-xs text-blue-300/70 mt-0.5">{user?.role === 'Author' ? 'Author Portal' : 'Reviewer Portal'}</p>
+                    <h1 className="text-lg font-bold tracking-tight" style={{ background: 'linear-gradient(135deg, #60A5FA, #34D399)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>OACRS</h1>
+                    <p className="text-xs text-blue-400/60 mt-0.5">{user?.role === 'Author' ? 'Author Portal' : 'Reviewer Portal'}</p>
                 </div>
                 
                 <nav className="flex-1 overflow-y-auto py-6 px-3 space-y-1.5">
@@ -55,8 +55,8 @@ const MainLayout = ({ children, activeTab, setActiveTab }) => {
                             }}
                             className={`w-full flex items-center px-4 py-3 rounded-xl transition-all duration-200 ${
                                 (activeTab === item.id || window.location.pathname === item.path)
-                                    ? 'bg-blue-600/20 text-white font-semibold shadow-lg shadow-blue-500/10 border border-blue-400/20'
-                                    : 'text-gray-400 hover:bg-white/10 hover:text-white'
+                                    ? 'bg-gradient-to-r from-blue-600/25 to-cyan-600/15 text-white font-semibold shadow-lg shadow-blue-500/10 border border-blue-400/25'
+                                    : 'text-gray-400 hover:bg-white/8 hover:text-white'
                             }`}
                         >
                             <span className={`mr-3 ${(activeTab === item.id || window.location.pathname === item.path)? 'text-blue-400' : 'text-gray-500'}`}>
@@ -79,16 +79,15 @@ const MainLayout = ({ children, activeTab, setActiveTab }) => {
                 <div className="p-4 border-t border-white/10">
                      <button
                         onClick={handleLogout}
-                        className="w-full flex items-center justify-center px-4 py-2.5 border border-white/15 rounded-xl text-sm font-medium text-gray-300 bg-white/5 hover:bg-white/10 hover:text-white focus:outline-none transition-all"
-                    >
-                        <LogOut size={16} className="mr-2 text-gray-400" />
+                        className="w-full flex items-center justify-center px-4 py-2.5 border border-red-500/20 rounded-xl text-sm font-medium text-red-300 bg-red-500/5 hover:bg-red-500/15 hover:text-red-200 focus:outline-none transition-all">
+                        <LogOut size={16} className="mr-2 text-red-400" />
                         Sign Out
                     </button>
                 </div>
             </aside>
 
             {/* Main Content Area */}
-            <main className="flex-1 flex flex-col overflow-hidden" style={{ background: 'linear-gradient(135deg, #f8fafc 0%, #eef2f7 50%, #f0f4f8 100%)' }}>
+            <main className="flex-1 flex flex-col overflow-hidden bg-mesh-gradient" style={{ background: 'linear-gradient(135deg, #f8fafc 0%, #eef2f7 50%, #f0f4f8 100%)' }}>
                 {/* Header */}
                 <header className="h-16 bg-white/80 backdrop-blur-md border-b border-gray-200/60 flex items-center justify-between px-8 z-10 shadow-sm">
                     <h2 className="text-xl font-semibold text-gray-800 tracking-tight capitalize">
@@ -100,7 +99,7 @@ const MainLayout = ({ children, activeTab, setActiveTab }) => {
                            <span className="text-sm font-semibold text-gray-900">{user?.name}</span>
                            <span className="text-xs text-white bg-blue-600 px-2.5 py-0.5 rounded-full mt-0.5 font-medium">{user?.role}</span>
                         </div>
-                        <div className="h-10 w-10 rounded-full flex items-center justify-center text-white font-bold shadow-lg" style={{ background: 'linear-gradient(135deg, #2563EB, #4F46E5)' }}>
+                        <div className="h-10 w-10 rounded-full flex items-center justify-center text-white font-bold shadow-lg ring-2 ring-blue-400/30" style={{ background: 'linear-gradient(135deg, #3B82F6, #06B6D4, #10B981)' }}>
                             {user?.name?.charAt(0).toUpperCase()}
                         </div>
                     </div>
