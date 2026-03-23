@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from '../utils/axios';
-import { User, FileText, Download, Eye, ArrowLeft, X, MessageSquare } from 'lucide-react';
+import { User, FileText, Download, Eye, ArrowLeft, X, MessageSquare, Code, Lightbulb } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 const Viewer = () => {
@@ -237,6 +237,32 @@ const Viewer = () => {
                                                         {review.recommendation}
                                                     </span>
                                                 </div>
+
+                                                {/* Ratings Grid */}
+                                                <div className="grid grid-cols-3 gap-3 mb-3">
+                                                    <div className="bg-gray-50 border border-gray-100 rounded-lg p-3 text-center">
+                                                        <div className="flex items-center justify-center text-indigo-600 mb-1">
+                                                            <Code size={16} className="mr-1.5" />
+                                                            <span className="text-xs font-semibold text-gray-700">Technical Quality</span>
+                                                        </div>
+                                                        <span className="text-xl font-bold text-gray-900">{review.technicalQuality || 0}</span>
+                                                    </div>
+                                                    <div className="bg-gray-50 border border-gray-100 rounded-lg p-3 text-center">
+                                                        <div className="flex items-center justify-center text-blue-600 mb-1">
+                                                            <MessageSquare size={16} className="mr-1.5" />
+                                                            <span className="text-xs font-semibold text-gray-700">Clarity & Scope</span>
+                                                        </div>
+                                                        <span className="text-xl font-bold text-gray-900">{review.clarity || 0}</span>
+                                                    </div>
+                                                    <div className="bg-gray-50 border border-gray-100 rounded-lg p-3 text-center">
+                                                        <div className="flex items-center justify-center text-amber-500 mb-1">
+                                                            <Lightbulb size={16} className="mr-1.5" />
+                                                            <span className="text-xs font-semibold text-gray-700">Novelty / Impact</span>
+                                                        </div>
+                                                        <span className="text-xl font-bold text-gray-900">{review.novelty || 0}</span>
+                                                    </div>
+                                                </div>
+
                                                 <div className="text-sm text-gray-600 bg-gray-50 p-3 rounded-lg block w-full border border-gray-100">
                                                     <span className="font-semibold block mb-1 text-gray-700">Comments:</span>
                                                     {review.comments || 'No specific comments provided.'}

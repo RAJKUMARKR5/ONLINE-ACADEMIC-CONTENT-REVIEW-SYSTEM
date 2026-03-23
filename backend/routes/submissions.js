@@ -67,7 +67,7 @@ router.get('/all', protect, authorize('Admin'), async (req, res) => {
             submissions.map(async (sub) => {
                 const reviews = await Review.find({ submission: sub._id })
                     .populate('reviewer', 'name')
-                    .select('reviewer recommendation comments createdAt');
+                    .select('reviewer recommendation comments technicalQuality clarity novelty createdAt');
                 
                 const assignment = await Assignment.findOne({ submission: sub._id, status: 'Pending' })
                     .populate('reviewer', 'name');
@@ -100,7 +100,7 @@ router.get('/published', async (req, res) => {
             publishedSubmissions.map(async (sub) => {
                 const reviews = await Review.find({ submission: sub._id })
                     .populate('reviewer', 'name')
-                    .select('reviewer recommendation comments createdAt');
+                    .select('reviewer recommendation comments technicalQuality clarity novelty createdAt');
                 
                 const subObj = sub.toObject();
                 subObj.reviews = reviews;
@@ -202,7 +202,7 @@ router.put('/:id/decision', protect, authorize('Admin'), async (req, res) => {
 
         const reviews = await Review.find({ submission: submission._id })
             .populate('reviewer', 'name')
-            .select('reviewer recommendation comments createdAt');
+            .select('reviewer recommendation comments technicalQuality clarity novelty createdAt');
         
         const assignment = await Assignment.findOne({ submission: submission._id, status: 'Pending' })
             .populate('reviewer', 'name');
