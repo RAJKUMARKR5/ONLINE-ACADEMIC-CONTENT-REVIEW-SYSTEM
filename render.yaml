@@ -26,5 +26,5 @@ services:
       - key: CLOUDINARY_API_KEY
         value: "695373442541355"
       - key: CLOUDINARY_API_SECRET
-        sync: false # Set in dashboard
+        value: "fd0FjBcu0KX2vFh5W158nzSKGzM"
 
