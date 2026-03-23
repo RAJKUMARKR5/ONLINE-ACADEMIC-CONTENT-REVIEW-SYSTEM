@@ -20,5 +20,11 @@ services:
       - key: VITE_GOOGLE_CLIENT_ID
         sync: false
       - key: VITE_FILE_BASE_URL
-        value: ""
+        value: "" # Empty by default for relative paths in production
+      - key: CLOUDINARY_CLOUD_NAME
+        value: "dahkkqw1d"
+      - key: CLOUDINARY_API_KEY
+        value: "695373442541355"
+      - key: CLOUDINARY_API_SECRET
+        sync: false # Set in dashboard
 

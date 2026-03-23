@@ -1,43 +1,17 @@
 const express = require('express');
 const router = express.Router();
-const multer = require('multer');
-const path = require('path');
 const Submission = require('../models/Submission');
 const Review = require('../models/Review');
 const User = require('../models/User'); // Import User for emails
 const Assignment = require('../models/Assignment');
 const { protect, authorize } = require('../middleware/authMiddleware');
 const sendEmail = require('../utils/sendEmail');
-
-// Multer Configuration
-const storage = multer.diskStorage({
-    destination: (req, file, cb) => {
-        cb(null, 'uploads/'); // Make sure this folder exists
-    },
-    filename: (req, file, cb) => {
-        cb(null, `${Date.now()}-${file.originalname}`);
-    }
-});
-
-const upload = multer({
-    storage: storage,
-    fileFilter: (req, file, cb) => {
-        const filetypes = /pdf|doc|docx/;
-        const extname = filetypes.test(path.extname(file.originalname).toLowerCase());
-        const mimetype = filetypes.test(file.mimetype);
-
-        if (extname && mimetype) {
-            return cb(null, true);
-        } else {
-            cb('Error: PDF and DOC/DOCX only!');
-        }
-    }
-});
+const { uploadCloud, cloudinary } = require('../config/cloudinaryConfig');
 
 // @desc    Create a new submission
 // @route   POST /api/submissions
 // @access  Private (Author only)
-router.post('/', protect, authorize('Author'), upload.single('file'), async (req, res) => {
+router.post('/', protect, authorize('Author'), uploadCloud.single('file'), async (req, res) => {
     const { title, abstract, keywords, domain } = req.body;
 
     if (!req.file) {
@@ -238,6 +212,26 @@ router.delete('/:id', protect, authorize('Author', 'Admin'), async (req, res) =>
         // Make sure user is submission author OR admin
         if (submission.author.toString() !== req.user.id && req.user.role !== 'Admin') {
             return res.status(401).json({ message: 'Not authorized to delete this submission' });
+        }
+
+        // Delete file from Cloudinary
+        if (submission.fileUrl && submission.fileUrl.includes('cloudinary.com')) {
+            try {
+                // Extract public_id from secure_url
+                // Format: https://res.cloudinary.com/.../raw/upload/v.../oacrs_submissions/filename.pdf
+                const urlParts = submission.fileUrl.split('/');
+                const folderIndex = urlParts.indexOf('oacrs_submissions');
+                if (folderIndex !== -1) {
+                    const publicIdPath = urlParts.slice(folderIndex).join('/');
+                    // Extract public_id (without extension if image, but for raw files like PDF/DOC we might need the exact ID)
+                    // CloudinaryStorage with 'raw' resource_type often keeps the extension in public_id
+                    const publicId = publicIdPath; // For raw files, the full path is usually the public ID
+                    await cloudinary.uploader.destroy(publicId, { resource_type: 'raw' });
+                    console.log(`[Cloudinary] Deleted file: ${publicId}`);
+                }
+            } catch (cloudErr) {
+                console.error('[Cloudinary] Failed to delete file:', cloudErr);
+            }
         }
 
         await Submission.findByIdAndDelete(req.params.id);

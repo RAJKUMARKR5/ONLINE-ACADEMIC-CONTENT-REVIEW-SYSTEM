@@ -146,7 +146,7 @@ const Viewer = () => {
                                         <span className="font-medium truncate max-w-[120px]">{paper.author?.name || 'Unknown Author'}</span>
                                     </div>
                                     <a
-                                        href={`${import.meta.env.VITE_FILE_BASE_URL || ''}/${encodeURI(paper.fileUrl.replace(/\\/g, '/'))}`} // Assuming fileUrl is a relative path stored in DB, adjust domain
+                                        href={paper.fileUrl.startsWith('http') ? paper.fileUrl : `${import.meta.env.VITE_FILE_BASE_URL || ''}/${encodeURI(paper.fileUrl.replace(/\\/g, '/'))}`}
                                         target="_blank"
                                         rel="noopener noreferrer"
                                         className="inline-flex items-center gap-1 text-sm bg-indigo-50 text-indigo-700 hover:bg-indigo-100 px-3 py-1.5 rounded-lg font-semibold transition-colors"
