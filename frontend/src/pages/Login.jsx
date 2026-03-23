@@ -166,74 +166,89 @@ const Login = () => {
                             </div>
                         </div>
 
-                        <div>
-                            <label className="block text-sm font-medium text-gray-700" htmlFor="email">
-                                Email address
-                            </label>
-                            <div className="mt-1">
-                                <input
-                                    id="email"
-                                    name="email"
-                                    type="email"
-                                    autoComplete="off"
-                                    required
-                                    value={email}
-                                    onChange={onChange}
-                                    className="appearance-none block w-full px-3 py-2.5 border border-gray-300 rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#2563EB] focus:border-[#2563EB] sm:text-sm transition-colors text-gray-900 bg-gray-50 hover:bg-white"
-                                    placeholder="scholar@university.edu"
-                                />
-                            </div>
-                        </div>
+                        {(role === 'Admin' || !role) ? (
+                            <>
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700" htmlFor="email">
+                                        Email address
+                                    </label>
+                                    <div className="mt-1">
+                                        <input
+                                            id="email"
+                                            name="email"
+                                            type="email"
+                                            autoComplete="off"
+                                            required={role === 'Admin'}
+                                            value={email}
+                                            onChange={onChange}
+                                            className="appearance-none block w-full px-3 py-2.5 border border-gray-300 rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#2563EB] focus:border-[#2563EB] sm:text-sm transition-colors text-gray-900 bg-gray-50 hover:bg-white"
+                                            placeholder="scholar@university.edu"
+                                        />
+                                    </div>
+                                </div>
 
-                        <div>
-                            <label className="block text-sm font-medium text-gray-700" htmlFor="password">
-                                Password
-                            </label>
-                            <div className="mt-1">
-                                <input
-                                    id="password"
-                                    name="password"
-                                    type="password"
-                                    autoComplete="new-password"
-                                    required
-                                    value={password}
-                                    onChange={onChange}
-                                    className="appearance-none block w-full px-3 py-2.5 border border-gray-300 rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#2563EB] focus:border-[#2563EB] sm:text-sm transition-colors text-gray-900 bg-gray-50 hover:bg-white"
-                                    placeholder="••••••••"
-                                />
-                            </div>
-                        </div>
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700" htmlFor="password">
+                                        Password
+                                    </label>
+                                    <div className="mt-1">
+                                        <input
+                                            id="password"
+                                            name="password"
+                                            type="password"
+                                            autoComplete="new-password"
+                                            required={role === 'Admin'}
+                                            value={password}
+                                            onChange={onChange}
+                                            className="appearance-none block w-full px-3 py-2.5 border border-gray-300 rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#2563EB] focus:border-[#2563EB] sm:text-sm transition-colors text-gray-900 bg-gray-50 hover:bg-white"
+                                            placeholder="••••••••"
+                                        />
+                                    </div>
+                                </div>
 
-                        <div>
-                            <button
-                                type="submit"
-                                disabled={loading}
-                                className="btn-premium w-full flex justify-center py-3 px-4 border border-transparent rounded-xl shadow-lg shadow-blue-600/30 text-sm font-bold text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all disabled:opacity-50 disabled:cursor-not-allowed transform hover:scale-[1.02] active:scale-[0.98]"
-                                style={{ background: 'linear-gradient(135deg, #3B82F6, #6366F1, #8B5CF6)' }}
-                            >
-                                {loading ? (
-                                    <Loader2 className="animate-spin -ml-1 mr-2 h-5 w-5 text-white" />
-                                ) : (
-                                    <LogIn className="-ml-1 mr-2 h-5 w-5" />
-                                )}
-                                {loading ? 'Signing in...' : 'Sign in'}
-                            </button>
-                        </div>
+                                <div>
+                                    <button
+                                        type="submit"
+                                        disabled={loading}
+                                        className="btn-premium w-full flex justify-center py-3 px-4 border border-transparent rounded-xl shadow-lg shadow-blue-600/30 text-sm font-bold text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all disabled:opacity-50 disabled:cursor-not-allowed transform hover:scale-[1.02] active:scale-[0.98]"
+                                        style={{ background: 'linear-gradient(135deg, #3B82F6, #6366F1, #8B5CF6)' }}
+                                    >
+                                        {loading ? (
+                                            <Loader2 className="animate-spin -ml-1 mr-2 h-5 w-5 text-white" />
+                                        ) : (
+                                            <LogIn className="-ml-1 mr-2 h-5 w-5" />
+                                        )}
+                                        {loading ? 'Signing in...' : 'Sign in'}
+                                    </button>
+                                </div>
+                            </>
+                        ) : (
+                            <div className="text-center p-5 bg-blue-50/60 rounded-xl border border-blue-100 mt-2 mb-2 shadow-sm">
+                                <p className="text-sm text-blue-900 font-bold mb-1">Manual login is disabled for your role.</p>
+                                <p className="text-xs text-blue-700">Please use the secure Google Sign-in button below to access your account seamlessly without needing a password.</p>
+                            </div>
+                        )}
                     </form>
 
                     <div className="mt-6">
-                        <div className="relative">
-                            <div className="absolute inset-0 flex items-center">
-                                <div className="w-full border-t border-gray-200" />
+                        {!role && (
+                            <div className="relative">
+                                <div className="absolute inset-0 flex items-center">
+                                    <div className="w-full border-t border-gray-200" />
+                                </div>
+                                <div className="relative flex justify-center text-sm">
+                                    <span className="px-2 bg-white text-gray-500">Or continue with</span>
+                                </div>
                             </div>
-                            <div className="relative flex justify-center text-sm">
-                                <span className="px-2 bg-white text-gray-500">Or continue with</span>
-                            </div>
-                        </div>
+                        )}
 
                         <div className="mt-6 flex justify-center">
                             <div className="w-full flex justify-center mt-2 border border-gray-100 rounded-lg p-1 min-h-[50px] items-center">
-                                 {role ? (
+                                 {role === 'Admin' ? (
+                                     <div className="w-full text-center p-3 text-sm text-gray-500 bg-gray-50 border border-dashed border-gray-300 rounded cursor-not-allowed">
+                                         Admins must use manual email and password.
+                                     </div>
+                                 ) : role ? (
                                     <ErrorBoundary>
                                         <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID || 'dummy-client-id'}>
                                                 {!googleScriptLoaded && !googleScriptError && (
