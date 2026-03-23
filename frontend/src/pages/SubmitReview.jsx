@@ -150,7 +150,7 @@ const SubmitReview = () => {
                             {submission.fileUrl && (
                                 <div className="pt-2">
                                     <a
-                                        href={`http://localhost:5000/${encodeURI(submission.fileUrl.replace(/\\/g, '/'))}`}
+                                        href={`${import.meta.env.VITE_FILE_BASE_URL || ''}/${encodeURI(submission.fileUrl.replace(/\\/g, '/'))}`}
                                         target="_blank"
                                         rel="noopener noreferrer"
                                         className="inline-flex items-center px-5 py-2.5 bg-[#2563EB] text-white rounded-lg hover:bg-[#1D4ED8] transition-colors font-medium shadow-sm"

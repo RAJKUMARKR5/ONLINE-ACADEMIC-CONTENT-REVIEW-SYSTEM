@@ -85,7 +85,7 @@ const AssignmentList = ({ assignments }) => {
                                     {assignment.submission ? (
                                         <>
                                             <a 
-                                                href={`http://localhost:5000/${encodeURI(assignment.submission.fileUrl.replace(/\\/g, '/'))}`} 
+                                                href={`${import.meta.env.VITE_FILE_BASE_URL || ''}/${encodeURI(assignment.submission.fileUrl.replace(/\\/g, '/'))}`} 
                                                 target="_blank" 
                                                 rel="noopener noreferrer" 
                                                 className="inline-flex items-center justify-center p-2 text-gray-500 hover:text-[#2563EB] hover:bg-blue-50 rounded-lg transition-colors"

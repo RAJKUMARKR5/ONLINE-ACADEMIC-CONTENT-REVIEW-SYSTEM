@@ -142,7 +142,7 @@ const AdminAssignPapers = ({
                                                     
                                                     {/* View Document */}
                                                     <a 
-                                                        href={`http://localhost:5000/${encodeURI(submission.fileUrl.replace(/\\/g, '/'))}`} 
+                                                        href={`${import.meta.env.VITE_FILE_BASE_URL || ''}/${encodeURI(submission.fileUrl.replace(/\\/g, '/'))}`} 
                                                         target="_blank" 
                                                         rel="noopener noreferrer" 
                                                         className="inline-flex items-center justify-center p-1.5 text-gray-400 hover:text-[#2563EB] hover:bg-blue-50 rounded-lg transition-colors border border-transparent hover:border-blue-100"
