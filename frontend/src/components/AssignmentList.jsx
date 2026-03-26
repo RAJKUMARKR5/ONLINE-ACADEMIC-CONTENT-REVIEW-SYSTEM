@@ -2,7 +2,7 @@ import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { FileText, Calendar, Tag, CheckCircle, Clock, MessageSquare } from 'lucide-react';
 
-const AssignmentList = ({ assignments }) => {
+const AssignmentList = ({ assignments, onViewDetails }) => {
     const navigate = useNavigate();
     const filteredAssignments = assignments ? assignments.filter(a => a.submission) : [];
 
@@ -22,7 +22,9 @@ const AssignmentList = ({ assignments }) => {
 
     const handleRowClick = (assignment) => {
         if (!assignment.submission) return;
-        if (assignment.status === 'Completed') {
+        if (assignment.status === 'Completed' && onViewDetails) {
+            onViewDetails(assignment.submission._id);
+        } else if (assignment.status === 'Completed') {
             navigate(`/view-feedback/${assignment.submission._id}`);
         } else {
             navigate(`/submit-review/${assignment.submission._id}/${assignment._id}`);
@@ -111,6 +113,7 @@ const AssignmentList = ({ assignments }) => {
                                             
                                             {assignment.status === 'Completed' ? (
                                                 <div
+                                                    onClick={(e) => { e.stopPropagation(); onViewDetails && onViewDetails(assignment.submission._id); }}
                                                     className="inline-flex items-center justify-center p-2 text-[#10B981] hover:bg-green-50 rounded-lg transition-colors cursor-pointer"
                                                     title="View Your Feedback"
                                                 >

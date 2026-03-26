@@ -3,6 +3,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate, Link } from 'react-router-dom';
 import { getMySubmissions, deleteSubmission, reset } from '../redux/submissionSlice';
 import SubmissionList from '../components/SubmissionList';
+import SubmissionModal from '../components/SubmissionModal';
 import MainLayout from '../components/MainLayout';
 import { PlusCircle, FileText, Clock } from 'lucide-react';
 import Skeleton from 'react-loading-skeleton';
@@ -20,6 +21,8 @@ const Dashboard = () => {
     
     // Default to 'dashboard' Tab for MainLayout
     const [activeTab, setActiveTab] = useState('dashboard');
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [selectedSubmissionId, setSelectedSubmissionId] = useState(null);
 
     useEffect(() => {
         if (!user) {
@@ -113,8 +116,25 @@ const Dashboard = () => {
                     </div>
                 </div>
                 
-                <SubmissionList submissions={submissions} onDelete={handleDelete} />
+                <SubmissionList 
+                    submissions={submissions} 
+                    onDelete={handleDelete} 
+                    onView={(id) => {
+                        setSelectedSubmissionId(id);
+                        setIsModalOpen(true);
+                    }}
+                />
             </div>
+            
+            {/* Submission Modal */}
+            <SubmissionModal 
+                isOpen={isModalOpen}
+                onClose={() => {
+                    setIsModalOpen(false);
+                    setSelectedSubmissionId(null);
+                }}
+                submissionId={selectedSubmissionId}
+            />
             
         </MainLayout>
     );

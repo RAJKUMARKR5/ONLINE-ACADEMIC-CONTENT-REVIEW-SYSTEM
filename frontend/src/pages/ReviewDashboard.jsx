@@ -3,6 +3,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { getAssignments, reset } from '../redux/reviewSlice';
 import AssignmentList from '../components/AssignmentList';
+import SubmissionModal from '../components/SubmissionModal';
 import { ListChecks, Clock, CheckCircle } from 'lucide-react';
 import Skeleton from 'react-loading-skeleton';
 import 'react-loading-skeleton/dist/skeleton.css';
@@ -19,6 +20,8 @@ const ReviewDashboard = () => {
 
     const [activeTab, setActiveTab] = useState('Pending');
     const [sidebarTab, setSidebarTab] = useState('dashboard');
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [selectedSubmissionId, setSelectedSubmissionId] = useState(null);
 
     useEffect(() => {
         if (!user) {
@@ -112,9 +115,25 @@ const ReviewDashboard = () => {
                 </div>
 
                 <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-                    <AssignmentList assignments={activeTab === 'Pending' ? pendingAssignments : completedAssignments} />
+                    <AssignmentList 
+                        assignments={activeTab === 'Pending' ? pendingAssignments : completedAssignments} 
+                        onViewDetails={(id) => {
+                            setSelectedSubmissionId(id);
+                            setIsModalOpen(true);
+                        }}
+                    />
                 </div>
             </div>
+
+            {/* Submission Modal */}
+            <SubmissionModal 
+                isOpen={isModalOpen}
+                onClose={() => {
+                    setIsModalOpen(false);
+                    setSelectedSubmissionId(null);
+                }}
+                submissionId={selectedSubmissionId}
+            />
         </MainLayout>
     );
 };

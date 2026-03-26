@@ -6,6 +6,7 @@ import AdminLayout from '../components/AdminLayout';
 import AdminOverview from '../components/AdminOverview';
 import AdminAssignPapers from '../components/AdminAssignPapers';
 import AdminManageUsers from '../components/AdminManageUsers';
+import SubmissionModal from '../components/SubmissionModal';
 import axios from '../utils/axios';
 import { toast } from 'react-toastify';
 import Skeleton from 'react-loading-skeleton';
@@ -24,6 +25,8 @@ const AdminDashboard = () => {
     const [selectedSubmission, setSelectedSubmission] = useState(null);
     const [selectedReviewer, setSelectedReviewer] = useState('');
     const [allUsers, setAllUsers] = useState([]); // Define this here or use Redux if we expand adminSlice
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [viewingSubmissionId, setViewingSubmissionId] = useState(null);
 
     useEffect(() => {
         if (!user || user.role !== 'Admin') {
@@ -143,6 +146,10 @@ const AdminDashboard = () => {
                         handleAssign={handleAssign}
                         handleDecision={handleDecision}
                         handleDelete={handleDelete}
+                        onViewDetails={(id) => {
+                            setViewingSubmissionId(id);
+                            setIsModalOpen(true);
+                        }}
                     />
                 );
             case 'manage':
@@ -171,6 +178,16 @@ const AdminDashboard = () => {
     return (
         <AdminLayout activeTab={activeTab} setActiveTab={setActiveTab}>
             {renderContent()}
+
+            {/* Submission Modal for Admin */}
+            <SubmissionModal 
+                isOpen={isModalOpen}
+                onClose={() => {
+                    setIsModalOpen(false);
+                    setViewingSubmissionId(null);
+                }}
+                submissionId={viewingSubmissionId}
+            />
         </AdminLayout>
     );
 };

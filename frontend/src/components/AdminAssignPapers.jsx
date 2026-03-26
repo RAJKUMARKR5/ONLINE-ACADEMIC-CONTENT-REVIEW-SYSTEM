@@ -10,7 +10,8 @@ const AdminAssignPapers = ({
     setSelectedReviewer,
     handleAssign,
     handleDecision,
-    handleDelete
+    handleDelete,
+    onViewDetails
 }) => {
     return (
         <div className="space-y-6">
@@ -50,9 +51,13 @@ const AdminAssignPapers = ({
                                     <tr key={submission._id} className="hover:bg-gray-50/50 transition-colors group">
                                         <td className="py-5 px-6 min-w-[300px]">
                                             <div className="flex flex-col">
-                                                <h3 className="text-base font-semibold text-[#1E293B] mb-1 line-clamp-2" title={submission.title}>
+                                                <button 
+                                                    onClick={() => onViewDetails && onViewDetails(submission._id)}
+                                                    className="text-left text-base font-semibold text-[#1E293B] hover:text-[#2563EB] mb-1 line-clamp-2 transition-colors focus:outline-none" 
+                                                    title={submission.title}
+                                                >
                                                     {submission.title}
-                                                </h3>
+                                                </button>
                                                 <p className="text-sm text-gray-500 flex items-center">
                                                     By: <span className="font-medium ml-1 text-gray-700">{submission.author?.name || 'Unknown Author'}</span>
                                                 </p>

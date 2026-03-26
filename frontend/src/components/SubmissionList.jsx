@@ -2,7 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { FileText, Calendar, Tag, MessageSquare, Trash2, Settings2, CheckCircle, Hash } from 'lucide-react';
 
-const SubmissionList = ({ submissions, onDelete }) => {
+const SubmissionList = ({ submissions, onDelete, onView }) => {
     if (!submissions || submissions.length === 0) {
         return (
             <div className="flex flex-col items-center justify-center py-16 bg-white border border-dashed border-gray-300 rounded-2xl">
@@ -37,7 +37,8 @@ const SubmissionList = ({ submissions, onDelete }) => {
             {submissions.map((submission) => (
                 <div
                     key={submission._id}
-                    className="bg-white rounded-2xl shadow-sm hover:shadow-md transition-shadow duration-300 border border-gray-200 overflow-hidden flex flex-col"
+                    onClick={() => onView && onView(submission._id)}
+                    className="bg-white rounded-2xl shadow-sm hover:shadow-md transition-shadow duration-300 border border-gray-200 overflow-hidden flex flex-col cursor-pointer"
                 >
                     <div className="p-6 flex-1">
                         <div className="flex justify-between items-start mb-4">
@@ -99,18 +100,18 @@ const SubmissionList = ({ submissions, onDelete }) => {
 
                         <div className="flex items-center gap-2">
                              {(submission.status === 'Reviewed' || submission.status === 'Accepted' || submission.status === 'Rejected' || submission.status === 'Published') && (
-                                 <Link 
-                                    to={`/view-feedback/${submission._id}`}
+                                 <button
+                                    onClick={(e) => { e.stopPropagation(); onView && onView(submission._id); }}
                                     className="inline-flex items-center justify-center w-8 h-8 bg-white border border-gray-200 text-gray-700 rounded-lg hover:bg-gray-50 hover:text-[#2563EB] transition-colors shadow-sm"
                                     title="View Feedback"
                                  >
                                      <MessageSquare size={16} />
-                                 </Link>
+                                 </button>
                             )}
 
-                            {onDelete && (
+                             {(submission.status === 'Pending' || submission.status === 'Under Review') && onDelete && (
                                  <button
-                                    onClick={() => onDelete(submission._id)}
+                                    onClick={(e) => { e.stopPropagation(); onDelete(submission._id); }}
                                     className="inline-flex items-center justify-center w-8 h-8 bg-white border border-gray-200 text-gray-500 rounded-lg hover:bg-red-50 hover:text-red-600 hover:border-red-200 transition-colors shadow-sm"
                                     title="Delete Submission"
                                  >
