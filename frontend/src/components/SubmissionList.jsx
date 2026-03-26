@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { FileText, Calendar, Tag, MessageSquare, Trash2, Settings2, CheckCircle } from 'lucide-react';
+import { FileText, Calendar, Tag, MessageSquare, Trash2, Settings2, CheckCircle, Hash } from 'lucide-react';
 
 const SubmissionList = ({ submissions, onDelete }) => {
     if (!submissions || submissions.length === 0) {
@@ -60,13 +60,26 @@ const SubmissionList = ({ submissions, onDelete }) => {
                             </div>
                         </div>
 
-                        <h3 className="text-lg font-bold text-[#1E293B] line-clamp-2 leading-tight mb-3">
+                        <h3 className="text-lg font-bold text-[#1E293B] leading-tight mb-3">
                             {submission.title}
                         </h3>
                         
-                        <p className="text-gray-600 text-sm mb-5 line-clamp-3 leading-relaxed">
+                        <div className="text-gray-600 text-sm mb-5 leading-relaxed bg-gray-50 border border-gray-100 p-3 rounded-lg max-h-48 overflow-y-auto whitespace-pre-wrap">
                             {submission.abstract}
-                        </p>
+                        </div>
+
+                        {submission.keywords && submission.keywords.length > 0 && (
+                            <div className="mb-4">
+                                <div className="flex flex-wrap gap-1.5">
+                                    {submission.keywords.map((keyword, idx) => (
+                                        <span key={idx} className="inline-flex items-center px-2 py-0.5 rounded-md bg-blue-50 text-blue-700 text-xs font-medium border border-blue-100">
+                                            <Hash size={10} className="mr-1 opacity-70" />
+                                            {keyword}
+                                        </span>
+                                    ))}
+                                </div>
+                            </div>
+                        )}
 
                         <div className="flex items-center text-gray-500 text-sm bg-gray-50 max-w-max px-3 py-1.5 rounded-lg border border-gray-100">
                             <Tag size={14} className="mr-2 text-[#2563EB]" />
