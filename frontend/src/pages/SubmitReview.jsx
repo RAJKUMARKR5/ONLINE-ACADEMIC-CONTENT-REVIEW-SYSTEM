@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom';
 import { submitReview } from '../redux/reviewSlice';
-import { Star, MessageSquare, ThumbsUp, GitPullRequest, Code, Lightbulb, CheckCircle, XCircle, FileText, User, Tag, Download, BookOpen } from 'lucide-react';
+import { Star, MessageSquare, ThumbsUp, GitPullRequest, Code, Lightbulb, CheckCircle, XCircle, FileText, User, Tag, Download, BookOpen, Hash } from 'lucide-react';
 import { toast } from 'react-toastify';
 import MainLayout from '../components/MainLayout';
 import axios from '../utils/axios';
@@ -113,53 +113,67 @@ const SubmitReview = () => {
                         <div className="h-4 bg-gray-200 rounded w-3/4"></div>
                     </div>
                 ) : submission ? (
-                    <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden mb-8">
-                        <div className="bg-indigo-50/50 border-b border-gray-100 px-8 py-5">
-                            <div className="flex items-center">
-                                <BookOpen size={22} className="mr-3 text-indigo-600" />
-                                <h2 className="text-lg font-bold text-gray-800">Submission Content</h2>
+                    <div className="bg-white rounded-xl shadow-lg border border-gray-100 p-8 relative mb-8 z-10">
+                        {/* Domain Badge */}
+                        <div className="mb-4">
+                            <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-green-50 text-green-600">
+                                {submission.domain}
+                            </span>
+                        </div>
+
+                        {/* Title */}
+                        <h1 className="text-2xl md:text-3xl font-extrabold text-[#1E293B] tracking-tight mb-2 uppercase pr-10">
+                            {submission.title}
+                        </h1>
+
+                        {/* Author */}
+                        <div className="flex items-center text-gray-500 mb-8">
+                            <User size={16} className="mr-2" />
+                            <span className="font-medium text-sm">{submission.author?.name || 'Unknown Author'}</span>
+                        </div>
+
+                        <hr className="border-gray-100 border-t-2 mb-6" />
+
+                        {/* Abstract Section */}
+                        <div className="mb-6">
+                            <h3 className="text-sm font-bold text-[#1E293B] flex items-center mb-3 uppercase tracking-wider">
+                                <FileText size={16} className="mr-2 text-[#2563EB]" />
+                                Abstract
+                            </h3>
+                            <div className="bg-gray-50 text-gray-600 p-5 rounded-xl text-sm leading-relaxed whitespace-pre-wrap border border-gray-100">
+                                {submission.abstract}
                             </div>
                         </div>
-                        <div className="p-8 space-y-5">
-                            <div>
-                                <h3 className="text-xl font-bold text-gray-900 mb-1">{submission.title}</h3>
-                                <div className="flex flex-wrap items-center gap-4 text-sm text-gray-500">
-                                    <span className="flex items-center"><User size={14} className="mr-1" /> {submission.author?.name || 'Unknown Author'}</span>
-                                    <span className="flex items-center"><Tag size={14} className="mr-1" /> {submission.domain}</span>
+
+                        {/* Keywords Section */}
+                        {submission.keywords && submission.keywords.length > 0 && (
+                            <div className="mb-8">
+                                <h3 className="text-sm font-bold text-[#1E293B] flex items-center mb-3 uppercase tracking-wider">
+                                    Keywords
+                                </h3>
+                                <div className="flex flex-wrap gap-2">
+                                    {submission.keywords.map((keyword, index) => (
+                                        <span key={index} className="inline-flex items-center px-3 py-1.5 rounded-lg bg-indigo-50 text-indigo-700 text-xs font-semibold border border-indigo-100">
+                                            <Hash size={12} className="mr-1.5 opacity-70" />
+                                            {keyword}
+                                        </span>
+                                    ))}
                                 </div>
                             </div>
+                        )}
 
-                            <div>
-                                <h4 className="text-sm font-bold text-gray-700 uppercase tracking-wider mb-2">Abstract</h4>
-                                <p className="text-gray-600 leading-relaxed bg-gray-50 p-4 rounded-xl border border-gray-100">{submission.abstract}</p>
+                        {submission.fileUrl && (
+                            <div className="pt-2">
+                                <a
+                                    href={submission.fileUrl.startsWith('http') ? submission.fileUrl : `${import.meta.env.VITE_FILE_BASE_URL || ''}/${encodeURI(submission.fileUrl.replace(/\\/g, '/'))}`}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="inline-flex items-center px-5 py-2.5 bg-[#2563EB] text-white rounded-lg hover:bg-[#1D4ED8] transition-colors font-medium shadow-sm"
+                                >
+                                    <Download size={16} className="mr-2" /> View / Download File
+                                </a>
                             </div>
-
-                            {submission.keywords && submission.keywords.length > 0 && (
-                                <div>
-                                    <h4 className="text-sm font-bold text-gray-700 uppercase tracking-wider mb-2">Keywords</h4>
-                                    <div className="flex flex-wrap gap-2">
-                                        {submission.keywords.map((kw, i) => (
-                                            <span key={i} className="px-3 py-1 bg-blue-50 text-blue-700 text-xs font-medium rounded-full border border-blue-100">
-                                                {kw}
-                                            </span>
-                                        ))}
-                                    </div>
-                                </div>
-                            )}
-
-                            {submission.fileUrl && (
-                                <div className="pt-2">
-                                    <a
-                                        href={submission.fileUrl.startsWith('http') ? submission.fileUrl : `${import.meta.env.VITE_FILE_BASE_URL || ''}/${encodeURI(submission.fileUrl.replace(/\\/g, '/'))}`}
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                        className="inline-flex items-center px-5 py-2.5 bg-[#2563EB] text-white rounded-lg hover:bg-[#1D4ED8] transition-colors font-medium shadow-sm"
-                                    >
-                                        <Download size={16} className="mr-2" /> View / Download File
-                                    </a>
-                                </div>
-                            )}
-                        </div>
+                        )}
                     </div>
                 ) : (
                     <div className="bg-yellow-50 border border-yellow-200 text-yellow-700 p-4 rounded-xl mb-8 text-center">

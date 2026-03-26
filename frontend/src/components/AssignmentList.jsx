@@ -1,8 +1,9 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { FileText, Calendar, Tag, CheckCircle, Clock, MessageSquare } from 'lucide-react';
 
 const AssignmentList = ({ assignments }) => {
+    const navigate = useNavigate();
     const filteredAssignments = assignments ? assignments.filter(a => a.submission) : [];
 
     if (filteredAssignments.length === 0) {
@@ -19,6 +20,15 @@ const AssignmentList = ({ assignments }) => {
         );
     }
 
+    const handleRowClick = (assignment) => {
+        if (!assignment.submission) return;
+        if (assignment.status === 'Completed') {
+            navigate(`/view-feedback/${assignment.submission._id}`);
+        } else {
+            navigate(`/submit-review/${assignment.submission._id}/${assignment._id}`);
+        }
+    };
+
     return (
         <div className="overflow-x-auto">
             <table className="w-full text-left border-collapse">
@@ -33,12 +43,16 @@ const AssignmentList = ({ assignments }) => {
                 </thead>
                 <tbody className="divide-y divide-gray-100">
                     {filteredAssignments.map((assignment) => (
-                        <tr key={assignment._id} className="hover:bg-gray-50/50 transition-colors group">
+                        <tr 
+                            key={assignment._id} 
+                            onClick={() => handleRowClick(assignment)}
+                            className="hover:bg-gray-50/80 transition-colors group cursor-pointer"
+                        >
                             
                             {/* Submission Details */}
                             <td className="py-5 px-6 min-w-[300px]">
                                 <div className="flex flex-col">
-                                    <h3 className="text-base font-semibold text-[#1E293B] mb-1 line-clamp-2 pr-4">
+                                    <h3 className="text-base font-semibold text-[#1E293B] mb-1 line-clamp-2 pr-4 group-hover:text-[#2563EB] transition-colors">
                                         {assignment.submission?.title || 'Unknown Title'}
                                     </h3>
                                     <p className="text-sm text-gray-500 line-clamp-1 pr-4">
@@ -88,6 +102,7 @@ const AssignmentList = ({ assignments }) => {
                                                 href={assignment.submission.fileUrl.startsWith('http') ? assignment.submission.fileUrl : `${import.meta.env.VITE_FILE_BASE_URL || ''}/${encodeURI(assignment.submission.fileUrl.replace(/\\/g, '/'))}`} 
                                                 target="_blank" 
                                                 rel="noopener noreferrer" 
+                                                onClick={(e) => e.stopPropagation()}
                                                 className="inline-flex items-center justify-center p-2 text-gray-500 hover:text-[#2563EB] hover:bg-blue-50 rounded-lg transition-colors"
                                                 title="View Document"
                                             >
@@ -95,20 +110,18 @@ const AssignmentList = ({ assignments }) => {
                                             </a>
                                             
                                             {assignment.status === 'Completed' ? (
-                                                <Link
-                                                    to={`/view-feedback/${assignment.submission._id}`}
-                                                    className="inline-flex items-center justify-center p-2 text-gray-500 hover:text-[#10B981] hover:bg-green-50 rounded-lg transition-colors"
+                                                <div
+                                                    className="inline-flex items-center justify-center p-2 text-[#10B981] hover:bg-green-50 rounded-lg transition-colors cursor-pointer"
                                                     title="View Your Feedback"
                                                 >
                                                     <MessageSquare size={18} />
-                                                </Link>
+                                                </div>
                                             ) : (
-                                                <Link
-                                                    to={`/submit-review/${assignment.submission._id}/${assignment._id}`}
-                                                    className="inline-flex items-center justify-center px-4 py-2 bg-[#2563EB] text-white text-sm font-medium rounded-lg shadow-sm hover:bg-[#1D4ED8] focus:outline-none focus:ring-2 focus:ring-[#2563EB] focus:ring-offset-1 transition-all"
+                                                <div
+                                                    className="inline-flex items-center justify-center px-4 py-2 bg-[#2563EB] text-white text-sm font-medium rounded-lg shadow-sm hover:bg-[#1D4ED8] focus:outline-none focus:ring-2 focus:ring-[#2563EB] focus:ring-offset-1 transition-all cursor-pointer"
                                                 >
                                                     Evaluate
-                                                </Link>
+                                                </div>
                                             )}
                                         </>
                                     ) : (
