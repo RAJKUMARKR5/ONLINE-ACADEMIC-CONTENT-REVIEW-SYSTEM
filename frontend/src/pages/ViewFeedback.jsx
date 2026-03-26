@@ -85,11 +85,11 @@ const ViewFeedback = () => {
                                 {/* Header */}
                                 <div className="bg-gray-50/80 px-8 py-5 border-b border-gray-100 flex justify-between items-center flex-wrap gap-4">
                                     <div className="flex items-center">
-                                        <div className="w-10 h-10 rounded-full bg-blue-100 text-blue-700 flex items-center justify-center font-bold mr-4">
-                                            R{index + 1}
+                                        <div className="w-10 h-10 rounded-full bg-blue-100 text-blue-700 flex items-center justify-center font-bold mr-4 uppercase">
+                                            {review.reviewer?.name ? review.reviewer.name.charAt(0) : `R${index + 1}`}
                                         </div>
-                                        <h2 className="text-xl font-bold text-gray-800 flex items-center">
-                                            Reviewer {index + 1}
+                                        <h2 className="text-xl font-bold text-gray-800 flex items-center capitalize">
+                                            {review.reviewer?.name || `Reviewer ${index + 1}`}
                                         </h2>
                                     </div>
                                     <span className={`px-4 py-1.5 rounded-full text-sm font-bold shadow-sm uppercase tracking-wider ${
