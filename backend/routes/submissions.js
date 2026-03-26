@@ -133,8 +133,8 @@ router.get('/:id', protect, authorize('Author', 'Reviewer', 'Admin'), async (req
 
 // @desc    Get reviews for a specific submission
 // @route   GET /api/submissions/:id/reviews
-// @access  Private (Author, Admin)
-router.get('/:id/reviews', protect, authorize('Author', 'Admin'), async (req, res) => {
+// @access  Private (Author, Admin, Reviewer)
+router.get('/:id/reviews', protect, authorize('Author', 'Admin', 'Reviewer'), async (req, res) => {
     try {
         // Fetch submission to verify ownership (if Author)
         const submission = await Submission.findById(req.params.id);
@@ -143,12 +143,28 @@ router.get('/:id/reviews', protect, authorize('Author', 'Admin'), async (req, re
             return res.status(404).json({ message: 'Submission not found' });
         }
 
-        // Optional: Ensure only the author or an admin can see these reviews
-        if (submission.author.toString() !== req.user.id && req.user.role !== 'Admin') {
+        // Check Authorization
+        if (req.user.role === 'Reviewer') {
+            // Verify Reviewer is assigned to this submission
+            const assignment = await Assignment.findOne({
+                submission: req.params.id,
+                reviewer: req.user.id
+            });
+            if (!assignment) {
+                return res.status(401).json({ message: 'Not authorized to view these reviews' });
+            }
+        } else if (submission.author.toString() !== req.user.id && req.user.role !== 'Admin') {
             return res.status(401).json({ message: 'Not authorized to view these reviews' });
         }
 
-        const reviews = await Review.find({ submission: req.params.id }).populate('reviewer', 'name');
+        // Determine Query
+        let query = { submission: req.params.id };
+        if (req.user.role === 'Reviewer') {
+            // Reviewers can only see their own feedback
+            query.reviewer = req.user.id;
+        }
+
+        const reviews = await Review.find(query).populate('reviewer', 'name');
         res.status(200).json(reviews);
     } catch (error) {
         console.error(error);

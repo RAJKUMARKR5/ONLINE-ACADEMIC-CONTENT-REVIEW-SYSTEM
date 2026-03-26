@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { FileText, Calendar, Tag, CheckCircle, Clock } from 'lucide-react';
+import { FileText, Calendar, Tag, CheckCircle, Clock, MessageSquare } from 'lucide-react';
 
 const AssignmentList = ({ assignments }) => {
     const filteredAssignments = assignments ? assignments.filter(a => a.submission) : [];
@@ -94,7 +94,15 @@ const AssignmentList = ({ assignments }) => {
                                                 <FileText size={18} />
                                             </a>
                                             
-                                            {assignment.status !== 'Completed' && (
+                                            {assignment.status === 'Completed' ? (
+                                                <Link
+                                                    to={`/view-feedback/${assignment.submission._id}`}
+                                                    className="inline-flex items-center justify-center p-2 text-gray-500 hover:text-[#10B981] hover:bg-green-50 rounded-lg transition-colors"
+                                                    title="View Your Feedback"
+                                                >
+                                                    <MessageSquare size={18} />
+                                                </Link>
+                                            ) : (
                                                 <Link
                                                     to={`/submit-review/${assignment.submission._id}/${assignment._id}`}
                                                     className="inline-flex items-center justify-center px-4 py-2 bg-[#2563EB] text-white text-sm font-medium rounded-lg shadow-sm hover:bg-[#1D4ED8] focus:outline-none focus:ring-2 focus:ring-[#2563EB] focus:ring-offset-1 transition-all"
